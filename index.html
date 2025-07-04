@@ -2,35 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RespawnedCode</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Minecraft-style font (Press Start 2P) -->
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
+    /* Load Minecraftia font from your fonts folder */
+    @font-face {
+      font-family: 'Minecraftia';
+      src: url('fonts/minecraftia.ttf') format('truetype');
+    }
+
+    /* Use Minecraftia font site-wide */
     body {
-      margin: 0;
-      padding: 0;
+      font-family: 'Minecraftia', monospace;
       background-color: #111;
       color: #0f0;
-      font-family: 'Press Start 2P', monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
       text-align: center;
+      padding: 2rem;
+      margin: 0;
     }
 
     h1 {
-      font-size: 1.5rem;
+      font-size: 3rem;
       margin-bottom: 1rem;
     }
 
     p {
-      font-size: 0.8rem;
-      max-width: 600px;
+      font-size: 1.25rem;
     }
 
     a {
@@ -41,8 +38,8 @@
 </head>
 <body>
   <h1>RespawnedCode</h1>
-  <p>Welcome to my world of game dev experiments, pixel magic, and Minecraft-flavored code.</p>
-  <p>More coming soon. Stay tuned!</p>
+  <p>Welcome to my Minecraft-font powered site!</p>
+  <p>More coming soon — stay tuned.</p>
   <p><a href="https://github.com/respawnedcode">GitHub</a></p>
 </body>
 </html>
