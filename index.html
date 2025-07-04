@@ -18,12 +18,13 @@
       width: 200px;
       height: 200px;
       cursor: grab;
-      transition: box-shadow 0.3s;
       transform-origin: 50% 50%;
+      /* Removed box-shadow */
+      transition: none; /* Remove transition for instant rotation */
     }
     #spinner:active {
       cursor: grabbing;
-      box-shadow: 0 0 30px #fff;
+      /* Removed box-shadow */
     }
     img {
       width: 100%;
@@ -58,8 +59,11 @@
     window.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
       const deltaX = e.clientX - lastX;
-      rotation += deltaX;
+
+      // Slow down rotation speed to 0.5x deltaX for smoother control
+      rotation += deltaX * 0.5;
       spinner.style.transform = `rotate(${rotation}deg)`;
+
       lastX = e.clientX;
     });
   </script>
