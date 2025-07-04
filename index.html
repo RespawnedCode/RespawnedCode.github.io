@@ -1,53 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
   <meta charset="UTF-8" />
-  <title>Fidget Spinner Toy</title>
+  <title>3-Arm Fidget Spinner</title>
   <style>
     body {
-      display: flex;
-      height: 100vh;
       margin: 0;
+      height: 100vh;
       background: #222;
+      display: flex;
       justify-content: center;
       align-items: center;
       user-select: none;
+      overflow: hidden;
     }
     #spinner {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background: conic-gradient(
-        red 0deg 60deg,
-        orange 60deg 120deg,
-        yellow 120deg 180deg,
-        green 180deg 240deg,
-        blue 240deg 300deg,
-        purple 300deg 360deg
-      );
-      box-shadow: 0 0 15px #fff;
+      width: 200px;
+      height: 200px;
+      position: relative;
       cursor: grab;
+      transform-origin: 50% 50%;
       transition: box-shadow 0.3s;
-      transform-origin: center center;
     }
     #spinner:active {
       cursor: grabbing;
       box-shadow: 0 0 30px #fff;
     }
+    .arm {
+      position: absolute;
+      width: 60px;
+      height: 140px;
+      background: linear-gradient(135deg, #ff4e50, #f9d423);
+      border-radius: 30px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+      top: 30px;
+      left: 70px;
+      transform-origin: center bottom;
+    }
+    .arm:nth-child(1) {
+      transform: rotate(0deg);
+    }
+    .arm:nth-child(2) {
+      transform: rotate(120deg);
+    }
+    .arm:nth-child(3) {
+      transform: rotate(240deg);
+    }
+    /* center circle */
+    #center {
+      position: absolute;
+      top: 70px;
+      left: 70px;
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle at center, #444, #111);
+      border-radius: 50%;
+      box-shadow: 0 0 20px #fff inset;
+      border: 4px solid #ccc;
+      z-index: 10;
+    }
   </style>
 </head>
 <body>
-  <div id="spinner"></div>
+  <div id="spinner">
+    <div class="arm"></div>
+    <div class="arm"></div>
+    <div class="arm"></div>
+    <div id="center"></div>
+  </div>
 
   <script>
     const spinner = document.getElementById('spinner');
     let isDragging = false;
     let lastX = 0;
+    let lastY = 0;
     let rotation = 0;
 
     spinner.addEventListener('mousedown', (e) => {
       isDragging = true;
       lastX = e.clientX;
+      lastY = e.clientY;
       e.preventDefault();
     });
 
@@ -58,9 +90,14 @@
     window.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
       const deltaX = e.clientX - lastX;
+      const deltaY = e.clientY - lastY;
+
+      // Use horizontal movement to add rotation
       rotation += deltaX;
       spinner.style.transform = `rotate(${rotation}deg)`;
+
       lastX = e.clientX;
+      lastY = e.clientY;
     });
   </script>
 </body>
