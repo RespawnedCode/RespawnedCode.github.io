@@ -40,14 +40,10 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      cursor: grab;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
       filter: grayscale(100%);
       position: relative;
-    }
-
-    #spinner:active {
-      cursor: grabbing;
+      pointer-events: none; /* So dragging can start anywhere */
     }
 
     #spinner img {
@@ -81,19 +77,21 @@
     let isDragging = false;
     let velocity = 0;
     let rotation = 0;
-    let friction = 0.985;
+    const friction = 0.985;
 
     let center = { x: 0, y: 0 };
     let lastAngle = 0;
     let lastTime = 0;
 
-    spinner.addEventListener('mousedown', (e) => {
+    window.addEventListener('mousedown', (e) => {
       isDragging = true;
+
       const rect = spinner.getBoundingClientRect();
       center = {
         x: rect.left + rect.width / 2,
         y: rect.top + rect.height / 2
       };
+
       lastAngle = Math.atan2(e.clientY - center.y, e.clientX - center.x);
       lastTime = Date.now();
       e.preventDefault();
@@ -112,7 +110,7 @@
       const now = Date.now();
       const dt = now - lastTime;
 
-      velocity = delta * 1000 / dt; // angular velocity in deg/sec
+      velocity = delta * 1000 / dt;
       rotation += delta * (180 / Math.PI);
       lastAngle = angle;
       lastTime = now;
