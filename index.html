@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Multi Fidget Spinners</title>
+  <title>RespawnedCode Spinner</title>
   <style>
     @font-face {
       font-family: 'Minecraftia';
@@ -25,13 +25,6 @@
       font-size: 2rem;
       margin-bottom: 20px;
       text-align: center;
-    }
-
-    .spinner-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
     }
 
     .spinner-box {
@@ -71,133 +64,92 @@
   </style>
 </head>
 <body>
-  <h1>RespawnedCode Fidget Spinner Zone</h1>
+  <h1>RespawnedCode Spinner</h1>
 
-  <div class="spinner-container" id="spinnerContainer">
-    <!-- Spinners will be added here -->
+  <div class="spinner-box">
+    <div class="spinner" id="spinner">
+      <img src="https://i.postimg.cc/xQsT1Xyg/fidgetspinner-d500c144.png" alt="Fidget Spinner" />
+    </div>
+    <div id="speedCounter" class="counter">Speed: 0</div>
+    <div id="spinStreak" class="counter">Streak: 0</div>
   </div>
 
   <script>
-    const imageURL = "https://i.postimg.cc/xQsT1Xyg/fidgetspinner-d500c144.png";
-    const spinnerCount = 3; // Change this number to add more spinners
+    const spinner = document.getElementById('spinner');
+    const speedCounter = document.getElementById('speedCounter');
+    const spinStreak = document.getElementById('spinStreak');
 
-    function createSpinnerElement(id) {
-      const box = document.createElement("div");
-      box.className = "spinner-box";
+    let isDragging = false;
+    let velocity = 0;
+    let rotation = 0;
+    const friction = 0.992;
+    let center = { x: 0, y: 0 };
+    let lastAngle = 0;
+    let lastTime = 0;
+    let streak = 0;
 
-      const spinner = document.createElement("div");
-      spinner.className = "spinner";
-      spinner.id = "spinner" + id;
-
-      const img = document.createElement("img");
-      img.src = imageURL;
-      spinner.appendChild(img);
-
-      const speed = document.createElement("div");
-      speed.className = "counter";
-      speed.id = "speed" + id;
-      speed.textContent = "Speed: 0";
-
-      const streak = document.createElement("div");
-      streak.className = "counter";
-      streak.id = "streak" + id;
-      streak.textContent = "Streak: 0";
-
-      box.appendChild(spinner);
-      box.appendChild(speed);
-      box.appendChild(streak);
-
-      return box;
-    }
-
-    const container = document.getElementById("spinnerContainer");
-
-    const spinners = [];
-
-    for (let i = 0; i < spinnerCount; i++) {
-      const spinnerElement = createSpinnerElement(i);
-      container.appendChild(spinnerElement);
-
-      const spinner = spinnerElement.querySelector(".spinner");
-      const speedDisplay = spinnerElement.querySelector(".counter:nth-child(2)");
-      const streakDisplay = spinnerElement.querySelector(".counter:nth-child(3)");
-
-      spinners.push({
-        el: spinner,
-        speedDisplay,
-        streakDisplay,
-        rotation: 0,
-        velocity: 0,
-        friction: 0.992,
-        streak: 0,
-        isDragging: false,
-        center: { x: 0, y: 0 },
-        lastAngle: 0,
-        lastTime: 0
-      });
-    }
-
-    function getPos(e) {
+    function getEventPos(e) {
       return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY };
     }
 
-    spinners.forEach((spinner, index) => {
-      spinner.el.addEventListener("mousedown", startDrag(index));
-      spinner.el.addEventListener("touchstart", startDrag(index), { passive: false });
-    });
-
-    window.addEventListener("mouseup", () => spinners.forEach(s => s.isDragging = false));
-    window.addEventListener("touchend", () => spinners.forEach(s => s.isDragging = false));
-    window.addEventListener("blur", () => spinners.forEach(s => s.isDragging = false));
-
-    window.addEventListener("mousemove", handleDrag);
-    window.addEventListener("touchmove", handleDrag, { passive: false });
-
-    function startDrag(i) {
-      return function (e) {
-        const s = spinners[i];
-        s.isDragging = true;
-        const rect = s.el.getBoundingClientRect();
-        s.center = {
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2
-        };
-        const pos = getPos(e);
-        s.lastAngle = Math.atan2(pos.y - s.center.y, pos.x - s.center.x);
-        s.lastTime = Date.now();
-        e.preventDefault();
+    function startDrag(e) {
+      isDragging = true;
+      const rect = spinner.getBoundingClientRect();
+      center = {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
       };
+
+      const pos = getEventPos(e);
+      lastAngle = Math.atan2(pos.y - center.y, pos.x - center.x);
+      lastTime = Date.now();
+      e.preventDefault();
     }
 
-    function handleDrag(e) {
-      spinners.forEach((s) => {
-        if (!s.isDragging) return;
-        const pos = getPos(e);
-        const angle = Math.atan2(pos.y - s.center.y, pos.x - s.center.x);
-        const delta = angle - s.lastAngle;
-        const now = Date.now();
-        const dt = now - s.lastTime;
-        const newVel = delta * 1000 / dt * 3;
-        if (Math.abs(newVel) > 0.4) s.streak++;
-        s.velocity = newVel;
-        s.rotation += delta * (180 / Math.PI);
-        s.lastAngle = angle;
-        s.lastTime = now;
-        s.el.style.transform = `rotate(${s.rotation}deg)`;
-      });
+    function stopDragging() {
+      isDragging = false;
     }
+
+    function duringDrag(e) {
+      if (!isDragging) return;
+      const pos = getEventPos(e);
+      const angle = Math.atan2(pos.y - center.y, pos.x - center.x);
+      const delta = angle - lastAngle;
+      const now = Date.now();
+      const dt = now - lastTime;
+      const newVelocity = delta * 1000 / dt * 3;
+
+      if (Math.abs(newVelocity) > 0.4) {
+        streak++;
+      }
+
+      velocity = newVelocity;
+      rotation += delta * (180 / Math.PI);
+      lastAngle = angle;
+      lastTime = now;
+      spinner.style.transform = `rotate(${rotation}deg)`;
+    }
+
+    window.addEventListener('mousedown', startDrag);
+    window.addEventListener('touchstart', startDrag, { passive: false });
+
+    window.addEventListener('mouseup', stopDragging);
+    window.addEventListener('touchend', stopDragging);
+    window.addEventListener('blur', stopDragging);
+
+    window.addEventListener('mousemove', duringDrag);
+    window.addEventListener('touchmove', duringDrag, { passive: false });
 
     function animate() {
-      spinners.forEach((s, i) => {
-        if (!s.isDragging) {
-          s.rotation += s.velocity;
-          s.velocity *= s.friction;
-          if (Math.abs(s.velocity) < 0.001) s.velocity = 0;
-          s.el.style.transform = `rotate(${s.rotation}deg)`;
-        }
-        s.speedDisplay.textContent = "Speed: " + Math.abs(s.velocity).toFixed(2);
-        s.streakDisplay.textContent = "Streak: " + s.streak;
-      });
+      if (!isDragging) {
+        rotation += velocity;
+        velocity *= friction;
+        if (Math.abs(velocity) < 0.001) velocity = 0;
+        spinner.style.transform = `rotate(${rotation}deg)`;
+      }
+
+      speedCounter.textContent = 'Speed: ' + Math.abs(velocity).toFixed(2);
+      spinStreak.textContent = 'Streak: ' + streak;
       requestAnimationFrame(animate);
     }
 
