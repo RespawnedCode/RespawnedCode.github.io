@@ -2,40 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Fidget Spinner - RespawnedCode</title>
-
+  <title>Multi Fidget Spinners</title>
   <style>
     @font-face {
       font-family: 'Minecraftia';
       src: url('https://cdn.jsdelivr.net/gh/duy13/minecraft-font/Minecraftia.ttf') format('truetype');
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
-      height: 100vh;
       background: linear-gradient(135deg, #333, #111);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
       font-family: 'Minecraftia', monospace;
       color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
       user-select: none;
-      text-align: center;
     }
 
     h1 {
       font-size: 2rem;
-      margin: 10px;
+      margin-bottom: 20px;
+      text-align: center;
     }
 
-    #spinner {
-      width: 220px;
-      height: 220px;
+    .spinner-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .spinner-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .spinner {
+      width: 200px;
+      height: 200px;
       border-radius: 50%;
       background: #888;
       display: flex;
@@ -43,156 +50,154 @@
       align-items: center;
       filter: grayscale(100%);
       box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-      margin-top: 20px;
+      margin-bottom: 10px;
+      touch-action: none;
     }
 
-    #spinner img {
+    .spinner img {
       width: 90%;
       height: 90%;
       pointer-events: none;
       user-drag: none;
-      user-select: none;
-    }
-
-    #info {
-      margin-top: 20px;
     }
 
     .counter {
       background: rgba(0, 0, 0, 0.4);
-      padding: 10px 20px;
-      border-radius: 12px;
-      font-size: 1rem;
-      margin: 5px;
-    }
-
-    #colorPicker {
-      margin-top: 15px;
-    }
-
-    select {
-      font-family: 'Minecraftia';
-      font-size: 1rem;
-      padding: 5px 10px;
+      padding: 5px 15px;
       border-radius: 10px;
-      border: none;
+      margin: 3px;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-  <h1>RespawnedCode Spinner</h1>
+  <h1>RespawnedCode Fidget Spinner Zone</h1>
 
-  <div id="colorPicker">
-    <label for="colorSelect">Choose Spinner Color:</label>
-    <select id="colorSelect">
-      <option value="gray">Gray</option>
-      <option value="red">Red</option>
-      <option value="blue">Blue</option>
-      <option value="green">Green</option>
-      <option value="gold">Gold</option>
-    </select>
-  </div>
-
-  <div id="spinner">
-    <img id="spinnerImg" src="https://i.postimg.cc/xQsT1Xyg/fidgetspinner-d500c144.png" alt="Fidget Spinner" />
-  </div>
-
-  <div id="info">
-    <div id="speedCounter" class="counter">Speed: 0</div>
-    <div id="spinStreak" class="counter">Streak: 0</div>
+  <div class="spinner-container" id="spinnerContainer">
+    <!-- Spinners will be added here -->
   </div>
 
   <script>
-    const spinner = document.getElementById('spinner');
-    const spinnerImg = document.getElementById('spinnerImg');
-    const colorSelect = document.getElementById('colorSelect');
-    const speedCounter = document.getElementById('speedCounter');
-    const spinStreak = document.getElementById('spinStreak');
+    const imageURL = "https://i.postimg.cc/xQsT1Xyg/fidgetspinner-d500c144.png";
+    const spinnerCount = 3; // Change this number to add more spinners
 
-    const spinnerImages = {
-      gray: 'https://i.postimg.cc/xQsT1Xyg/fidgetspinner-d500c144.png',
-      red: 'https://i.postimg.cc/2yDh51nw/fidget-red.png',
-      blue: 'https://i.postimg.cc/7P6vT0Lv/fidget-blue.png',
-      green: 'https://i.postimg.cc/fWQtvhGK/fidget-green.png',
-      gold: 'https://i.postimg.cc/wj6VKk4C/fidget-gold.png'
-    };
+    function createSpinnerElement(id) {
+      const box = document.createElement("div");
+      box.className = "spinner-box";
 
-    colorSelect.addEventListener('change', () => {
-      const color = colorSelect.value;
-      spinnerImg.src = spinnerImages[color] || spinnerImages.gray;
-    });
+      const spinner = document.createElement("div");
+      spinner.className = "spinner";
+      spinner.id = "spinner" + id;
 
-    let isDragging = false;
-    let velocity = 0;
-    let rotation = 0;
-    const friction = 0.992;
-    let center = { x: 0, y: 0 };
-    let lastAngle = 0;
-    let lastTime = 0;
-    let streak = 0;
+      const img = document.createElement("img");
+      img.src = imageURL;
+      spinner.appendChild(img);
 
-    function getEventPos(e) {
+      const speed = document.createElement("div");
+      speed.className = "counter";
+      speed.id = "speed" + id;
+      speed.textContent = "Speed: 0";
+
+      const streak = document.createElement("div");
+      streak.className = "counter";
+      streak.id = "streak" + id;
+      streak.textContent = "Streak: 0";
+
+      box.appendChild(spinner);
+      box.appendChild(speed);
+      box.appendChild(streak);
+
+      return box;
+    }
+
+    const container = document.getElementById("spinnerContainer");
+
+    const spinners = [];
+
+    for (let i = 0; i < spinnerCount; i++) {
+      const spinnerElement = createSpinnerElement(i);
+      container.appendChild(spinnerElement);
+
+      const spinner = spinnerElement.querySelector(".spinner");
+      const speedDisplay = spinnerElement.querySelector(".counter:nth-child(2)");
+      const streakDisplay = spinnerElement.querySelector(".counter:nth-child(3)");
+
+      spinners.push({
+        el: spinner,
+        speedDisplay,
+        streakDisplay,
+        rotation: 0,
+        velocity: 0,
+        friction: 0.992,
+        streak: 0,
+        isDragging: false,
+        center: { x: 0, y: 0 },
+        lastAngle: 0,
+        lastTime: 0
+      });
+    }
+
+    function getPos(e) {
       return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY };
     }
 
-    function startDrag(e) {
-      isDragging = true;
-      const rect = spinner.getBoundingClientRect();
-      center = {
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2
+    spinners.forEach((spinner, index) => {
+      spinner.el.addEventListener("mousedown", startDrag(index));
+      spinner.el.addEventListener("touchstart", startDrag(index), { passive: false });
+    });
+
+    window.addEventListener("mouseup", () => spinners.forEach(s => s.isDragging = false));
+    window.addEventListener("touchend", () => spinners.forEach(s => s.isDragging = false));
+    window.addEventListener("blur", () => spinners.forEach(s => s.isDragging = false));
+
+    window.addEventListener("mousemove", handleDrag);
+    window.addEventListener("touchmove", handleDrag, { passive: false });
+
+    function startDrag(i) {
+      return function (e) {
+        const s = spinners[i];
+        s.isDragging = true;
+        const rect = s.el.getBoundingClientRect();
+        s.center = {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        };
+        const pos = getPos(e);
+        s.lastAngle = Math.atan2(pos.y - s.center.y, pos.x - s.center.x);
+        s.lastTime = Date.now();
+        e.preventDefault();
       };
-
-      const pos = getEventPos(e);
-      lastAngle = Math.atan2(pos.y - center.y, pos.x - center.x);
-      lastTime = Date.now();
-      e.preventDefault();
     }
 
-    function stopDragging() {
-      isDragging = false;
+    function handleDrag(e) {
+      spinners.forEach((s) => {
+        if (!s.isDragging) return;
+        const pos = getPos(e);
+        const angle = Math.atan2(pos.y - s.center.y, pos.x - s.center.x);
+        const delta = angle - s.lastAngle;
+        const now = Date.now();
+        const dt = now - s.lastTime;
+        const newVel = delta * 1000 / dt * 3;
+        if (Math.abs(newVel) > 0.4) s.streak++;
+        s.velocity = newVel;
+        s.rotation += delta * (180 / Math.PI);
+        s.lastAngle = angle;
+        s.lastTime = now;
+        s.el.style.transform = `rotate(${s.rotation}deg)`;
+      });
     }
-
-    function duringDrag(e) {
-      if (!isDragging) return;
-      const pos = getEventPos(e);
-      const angle = Math.atan2(pos.y - center.y, pos.x - center.x);
-      const delta = angle - lastAngle;
-      const now = Date.now();
-      const dt = now - lastTime;
-      const newVelocity = delta * 1000 / dt * 3;
-
-      if (Math.abs(newVelocity) > 0.4) {
-        streak++;
-      }
-
-      velocity = newVelocity;
-      rotation += delta * (180 / Math.PI);
-      lastAngle = angle;
-      lastTime = now;
-      spinner.style.transform = `rotate(${rotation}deg)`;
-    }
-
-    window.addEventListener('mousedown', startDrag);
-    window.addEventListener('touchstart', startDrag, { passive: false });
-
-    window.addEventListener('mouseup', stopDragging);
-    window.addEventListener('touchend', stopDragging);
-    window.addEventListener('blur', stopDragging);
-
-    window.addEventListener('mousemove', duringDrag);
-    window.addEventListener('touchmove', duringDrag, { passive: false });
 
     function animate() {
-      if (!isDragging) {
-        rotation += velocity;
-        velocity *= friction;
-        if (Math.abs(velocity) < 0.001) velocity = 0;
-        spinner.style.transform = `rotate(${rotation}deg)`;
-      }
-
-      speedCounter.textContent = 'Speed: ' + Math.abs(velocity).toFixed(2);
-      spinStreak.textContent = 'Streak: ' + streak;
+      spinners.forEach((s, i) => {
+        if (!s.isDragging) {
+          s.rotation += s.velocity;
+          s.velocity *= s.friction;
+          if (Math.abs(s.velocity) < 0.001) s.velocity = 0;
+          s.el.style.transform = `rotate(${s.rotation}deg)`;
+        }
+        s.speedDisplay.textContent = "Speed: " + Math.abs(s.velocity).toFixed(2);
+        s.streakDisplay.textContent = "Streak: " + s.streak;
+      });
       requestAnimationFrame(animate);
     }
 
