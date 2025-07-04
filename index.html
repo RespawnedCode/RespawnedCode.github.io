@@ -2,7 +2,7 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8" />
-  <title>Fidget Spinner with Speed Counter</title>
+  <title>Fidget Spinner with Flick Spin</title>
   <style>
     body {
       margin: 0;
@@ -61,35 +61,58 @@
     let lastX = 0;
     let rotation = 0;
     let velocity = 0;
-    const friction = 0.92; // more friction = slower stop
+    const friction = 0.92;
+
+    // For velocity calculation: track positions and timestamps
+    let positions = [];
+    const maxPositions = 5; // number of recent points to consider
 
     spinner.addEventListener('mousedown', (e) => {
       isDragging = true;
       lastX = e.clientX;
-      velocity = 0; // reset velocity on drag start
+      velocity = 0;
+      positions = [{x: e.clientX, time: Date.now()}];
       e.preventDefault();
     });
 
     window.addEventListener('mouseup', () => {
       isDragging = false;
+
+      // Calculate flick velocity based on last few recorded positions
+      const now = Date.now();
+      // Filter only recent points in last 100ms
+      positions = positions.filter(pos => now - pos.time <= 100);
+
+      if (positions.length >= 2) {
+        const first = positions[0];
+        const last = positions[positions.length - 1];
+        const deltaX = last.x - first.x;
+        const deltaTime = (last.time - first.time) || 1; // prevent divide by zero
+
+        // velocity in px/ms * multiplier for better feel
+        velocity = (deltaX / deltaTime) * 16 * 2; // 16 ~ frame ms, 2 = speed boost
+      }
+
+      positions = [];
     });
 
     window.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
 
       const deltaX = e.clientX - lastX;
-
       rotation += deltaX;
-      velocity = deltaX; // velocity follows drag speed
-
       spinner.style.transform = `rotate(${rotation}deg)`;
+
       lastX = e.clientX;
+
+      // Record position and time for velocity calculation
+      positions.push({x: e.clientX, time: Date.now()});
+      if (positions.length > maxPositions) positions.shift();
     });
 
     function animate() {
       if (!isDragging) {
         velocity *= friction;
-
         if (Math.abs(velocity) > 0.01) {
           rotation += velocity;
           spinner.style.transform = `rotate(${rotation}deg)`;
@@ -98,9 +121,7 @@
         }
       }
 
-      // Show speed as absolute velocity rounded to integer
       speedCounter.textContent = 'Speed: ' + Math.round(Math.abs(velocity));
-
       requestAnimationFrame(animate);
     }
 
