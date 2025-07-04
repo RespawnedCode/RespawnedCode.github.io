@@ -17,19 +17,20 @@
     body {
       margin: 0;
       height: 100vh;
-      background: linear-gradient(135deg, #f0f0f0 0%, #222 100%);
+      background: linear-gradient(135deg, #ccc 0%, #222 100%);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       font-family: 'Minecraftia', monospace;
-      color: #222;
+      color: #fff;
       user-select: none;
     }
 
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px #000;
     }
 
     #spinner {
@@ -40,10 +41,10 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
       filter: grayscale(100%);
       position: relative;
-      pointer-events: none; /* So dragging can start anywhere */
+      pointer-events: none;
     }
 
     #spinner img {
@@ -51,15 +52,24 @@
       height: 90%;
       pointer-events: none;
       user-drag: none;
+      user-select: none;
     }
 
-    #speedCounter {
-      margin-top: 20px;
+    #info {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .counter {
+      background: rgba(0, 0, 0, 0.4);
       padding: 10px 20px;
-      background: rgba(255, 255, 255, 0.8);
       border-radius: 12px;
-      font-size: 1.2rem;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      color: #eee;
     }
   </style>
 </head>
@@ -68,22 +78,31 @@
   <div id="spinner">
     <img src="https://i.postimg.cc/xQsT1Xyg/fidgetspinner-d500c144.png" alt="Fidget Spinner" />
   </div>
-  <div id="speedCounter">Speed: 0</div>
+  <div id="info">
+    <div id="speedCounter" class="counter">Speed: 0</div>
+    <div id="spinStreak" class="counter">Streak: 0</div>
+  </div>
 
   <script>
     const spinner = document.getElementById('spinner');
     const speedCounter = document.getElementById('speedCounter');
+    const spinStreak = document.getElementById('spinStreak');
 
     let isDragging = false;
     let velocity = 0;
     let rotation = 0;
-    const friction = 0.985;
+    const friction = 0.992;
 
     let center = { x: 0, y: 0 };
     let lastAngle = 0;
     let lastTime = 0;
+    let streak = 0;
 
-    window.addEventListener('mousedown', (e) => {
+    function getEventPos(e) {
+      return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY };
+    }
+
+    function startDrag(e) {
       isDragging = true;
 
       const rect = spinner.getBoundingClientRect();
@@ -92,31 +111,49 @@
         y: rect.top + rect.height / 2
       };
 
-      lastAngle = Math.atan2(e.clientY - center.y, e.clientX - center.x);
+      const pos = getEventPos(e);
+      lastAngle = Math.atan2(pos.y - center.y, pos.x - center.x);
       lastTime = Date.now();
       e.preventDefault();
-    });
+    }
 
-    window.addEventListener('mouseup', () => {
+    function stopDragging() {
       isDragging = false;
-    });
+    }
 
-    window.addEventListener('mousemove', (e) => {
+    function duringDrag(e) {
       if (!isDragging) return;
 
-      const angle = Math.atan2(e.clientY - center.y, e.clientX - center.x);
+      const pos = getEventPos(e);
+      const angle = Math.atan2(pos.y - center.y, pos.x - center.x);
       const delta = angle - lastAngle;
 
       const now = Date.now();
       const dt = now - lastTime;
 
-      velocity = delta * 1000 / dt;
+      const newVelocity = delta * 1000 / dt * 3; // speed multiplier
+
+      if (Math.abs(newVelocity) > 0.4) {
+        streak++;
+      }
+
+      velocity = newVelocity;
       rotation += delta * (180 / Math.PI);
       lastAngle = angle;
       lastTime = now;
 
       spinner.style.transform = `rotate(${rotation}deg)`;
-    });
+    }
+
+    window.addEventListener('mousedown', startDrag);
+    window.addEventListener('touchstart', startDrag, { passive: false });
+
+    window.addEventListener('mouseup', stopDragging);
+    window.addEventListener('touchend', stopDragging);
+    window.addEventListener('blur', stopDragging);
+
+    window.addEventListener('mousemove', duringDrag);
+    window.addEventListener('touchmove', duringDrag, { passive: false });
 
     function animate() {
       if (!isDragging) {
@@ -128,6 +165,8 @@
       }
 
       speedCounter.textContent = 'Speed: ' + Math.abs(velocity).toFixed(2);
+      spinStreak.textContent = 'Streak: ' + streak;
+
       requestAnimationFrame(animate);
     }
 
