@@ -28,6 +28,7 @@
       box-shadow: 0 0 15px #fff;
       cursor: grab;
       transition: box-shadow 0.3s;
+      transform-origin: center center;
     }
     #spinner:active {
       cursor: grabbing;
@@ -47,6 +48,7 @@
     spinner.addEventListener('mousedown', (e) => {
       isDragging = true;
       lastX = e.clientX;
+      e.preventDefault();
     });
 
     window.addEventListener('mouseup', () => {
@@ -57,4 +59,9 @@
       if (!isDragging) return;
       const deltaX = e.clientX - lastX;
       rotation += deltaX;
-      spinner.style.transform = `rotate(${rotation}deg
+      spinner.style.transform = `rotate(${rotation}deg)`;
+      lastX = e.clientX;
+    });
+  </script>
+</body>
+</html>
