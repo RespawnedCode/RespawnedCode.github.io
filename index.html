@@ -17,7 +17,7 @@
     body {
       margin: 0;
       height: 100vh;
-      background: linear-gradient(135deg, #ccc 0%, #222 100%);
+      background: linear-gradient(135deg, #333, #111);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -25,12 +25,12 @@
       font-family: 'Minecraftia', monospace;
       color: #fff;
       user-select: none;
+      text-align: center;
     }
 
     h1 {
-      font-size: 2.2rem;
-      margin-bottom: 20px;
-      text-shadow: 2px 2px #000;
+      font-size: 2rem;
+      margin: 10px;
     }
 
     #spinner {
@@ -41,10 +41,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
       filter: grayscale(100%);
-      position: relative;
-      pointer-events: none;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      margin-top: 20px;
     }
 
     #spinner img {
@@ -56,11 +55,7 @@
     }
 
     #info {
-      margin-top: 30px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
+      margin-top: 20px;
     }
 
     .counter {
@@ -68,16 +63,40 @@
       padding: 10px 20px;
       border-radius: 12px;
       font-size: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      color: #eee;
+      margin: 5px;
+    }
+
+    #colorPicker {
+      margin-top: 15px;
+    }
+
+    select {
+      font-family: 'Minecraftia';
+      font-size: 1rem;
+      padding: 5px 10px;
+      border-radius: 10px;
+      border: none;
     }
   </style>
 </head>
 <body>
   <h1>RespawnedCode Spinner</h1>
-  <div id="spinner">
-    <img src="https://i.postimg.cc/xQsT1Xyg/fidgetspinner-d500c144.png" alt="Fidget Spinner" />
+
+  <div id="colorPicker">
+    <label for="colorSelect">Choose Spinner Color:</label>
+    <select id="colorSelect">
+      <option value="gray">Gray</option>
+      <option value="red">Red</option>
+      <option value="blue">Blue</option>
+      <option value="green">Green</option>
+      <option value="gold">Gold</option>
+    </select>
   </div>
+
+  <div id="spinner">
+    <img id="spinnerImg" src="https://i.postimg.cc/xQsT1Xyg/fidgetspinner-d500c144.png" alt="Fidget Spinner" />
+  </div>
+
   <div id="info">
     <div id="speedCounter" class="counter">Speed: 0</div>
     <div id="spinStreak" class="counter">Streak: 0</div>
@@ -85,14 +104,28 @@
 
   <script>
     const spinner = document.getElementById('spinner');
+    const spinnerImg = document.getElementById('spinnerImg');
+    const colorSelect = document.getElementById('colorSelect');
     const speedCounter = document.getElementById('speedCounter');
     const spinStreak = document.getElementById('spinStreak');
+
+    const spinnerImages = {
+      gray: 'https://i.postimg.cc/xQsT1Xyg/fidgetspinner-d500c144.png',
+      red: 'https://i.postimg.cc/2yDh51nw/fidget-red.png',
+      blue: 'https://i.postimg.cc/7P6vT0Lv/fidget-blue.png',
+      green: 'https://i.postimg.cc/fWQtvhGK/fidget-green.png',
+      gold: 'https://i.postimg.cc/wj6VKk4C/fidget-gold.png'
+    };
+
+    colorSelect.addEventListener('change', () => {
+      const color = colorSelect.value;
+      spinnerImg.src = spinnerImages[color] || spinnerImages.gray;
+    });
 
     let isDragging = false;
     let velocity = 0;
     let rotation = 0;
     const friction = 0.992;
-
     let center = { x: 0, y: 0 };
     let lastAngle = 0;
     let lastTime = 0;
@@ -104,7 +137,6 @@
 
     function startDrag(e) {
       isDragging = true;
-
       const rect = spinner.getBoundingClientRect();
       center = {
         x: rect.left + rect.width / 2,
@@ -123,15 +155,12 @@
 
     function duringDrag(e) {
       if (!isDragging) return;
-
       const pos = getEventPos(e);
       const angle = Math.atan2(pos.y - center.y, pos.x - center.x);
       const delta = angle - lastAngle;
-
       const now = Date.now();
       const dt = now - lastTime;
-
-      const newVelocity = delta * 1000 / dt * 3; // speed multiplier
+      const newVelocity = delta * 1000 / dt * 3;
 
       if (Math.abs(newVelocity) > 0.4) {
         streak++;
@@ -141,7 +170,6 @@
       rotation += delta * (180 / Math.PI);
       lastAngle = angle;
       lastTime = now;
-
       spinner.style.transform = `rotate(${rotation}deg)`;
     }
 
@@ -159,14 +187,12 @@
       if (!isDragging) {
         rotation += velocity;
         velocity *= friction;
-
         if (Math.abs(velocity) < 0.001) velocity = 0;
         spinner.style.transform = `rotate(${rotation}deg)`;
       }
 
       speedCounter.textContent = 'Speed: ' + Math.abs(velocity).toFixed(2);
       spinStreak.textContent = 'Streak: ' + streak;
-
       requestAnimationFrame(animate);
     }
 
