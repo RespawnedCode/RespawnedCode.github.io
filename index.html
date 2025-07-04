@@ -135,8 +135,8 @@
         const deltaX = last.x - first.x;
         const deltaTime = (last.time - first.time) || 1;
 
-        // Reverse direction by negating velocity
-        velocity = - (deltaX / deltaTime) * 16 * 2;
+        // velocity same sign as drag direction (no negation)
+        velocity = (deltaX / deltaTime) * 16 * 2;
       }
       positions = [];
     });
