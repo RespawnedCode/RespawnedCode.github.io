@@ -2,28 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>RespawnedCode</title>
+  <title>Fidget Spinner Toy</title>
   <style>
-    @font-face {
-      font-family: 'Minecraftia';
-      src: url('Minecraftia-Regular.ttf') format('truetype');
-    }
     body {
-      font-family: 'Minecraftia', monospace;
-      background-color: #111;
-      color: #0f0;
-      text-align: center;
-      padding: 2rem;
+      display: flex;
+      height: 100vh;
       margin: 0;
+      background: #222;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
     }
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
+    #spinner {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: conic-gradient(
+        red 0deg 60deg,
+        orange 60deg 120deg,
+        yellow 120deg 180deg,
+        green 180deg 240deg,
+        blue 240deg 300deg,
+        purple 300deg 360deg
+      );
+      box-shadow: 0 0 15px #fff;
+      cursor: grab;
+      transition: box-shadow 0.3s;
+    }
+    #spinner:active {
+      cursor: grabbing;
+      box-shadow: 0 0 30px #fff;
     }
   </style>
 </head>
 <body>
-  <h1>RespawnedCode</h1>
-  <p>Welcome to my Minecraft-font powered site!</p>
-</body>
-</html>
+  <div id="spinner"></div>
+
+  <script>
+    const spinner = document.getElementById('spinner');
+    let isDragging = false;
+    let lastX = 0;
+    let rotation = 0;
+
+    spinner.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      lastX = e.clientX;
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const deltaX = e.clientX - lastX;
+      rotation += deltaX;
+      spinner.style.transform = `rotate(${rotation}deg
