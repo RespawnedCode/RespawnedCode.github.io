@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>RespawnedCode Spinner</title>
+  <title>Giant RespawnedCode Spinner</title>
   <style>
     @font-face {
       font-family: 'Minecraftia';
@@ -17,13 +17,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px;
+      padding: 40px;
       user-select: none;
     }
 
     h1 {
-      font-size: 2rem;
-      margin-bottom: 20px;
+      font-size: 3rem;
+      margin-bottom: 30px;
       text-align: center;
     }
 
@@ -34,17 +34,22 @@
     }
 
     .spinner {
-      width: 200px;
-      height: 200px;
+      width: 500px;
+      height: 500px;
       border-radius: 50%;
       background: #888;
       display: flex;
       justify-content: center;
       align-items: center;
       filter: grayscale(100%);
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-      margin-bottom: 10px;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.7);
+      margin-bottom: 20px;
       touch-action: none;
+      cursor: grab;
+      user-select: none;
+    }
+    .spinner:active {
+      cursor: grabbing;
     }
 
     .spinner img {
@@ -52,19 +57,22 @@
       height: 90%;
       pointer-events: none;
       user-drag: none;
+      user-select: none;
     }
 
     .counter {
       background: rgba(0, 0, 0, 0.4);
-      padding: 5px 15px;
-      border-radius: 10px;
-      margin: 3px;
-      font-size: 0.9rem;
+      padding: 10px 25px;
+      border-radius: 12px;
+      margin: 8px;
+      font-size: 1.5rem;
+      min-width: 180px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>RespawnedCode Spinner</h1>
+  <h1>RespawnedCode Giant Spinner</h1>
 
   <div class="spinner-box">
     <div class="spinner" id="spinner">
