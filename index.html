@@ -3,271 +3,355 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Professional Drawing App | RespawnedCode</title>
+  <title>RespawnedCode Pro Drawing App</title>
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- Inter font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 
   <style>
-    /* Reset and basics */
+    /* CSS Reset */
     * {
       box-sizing: border-box;
-    }
-    body {
       margin: 0;
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      background: #f9fafc;
-      color: #2c3e50;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background-color 0.4s ease, color 0.4s ease;
+      user-select: none;
+    }
+
+    :root {
+      --primary: #4f94f7;
+      --primary-hover: #3d7be0;
+      --bg: #1e1e2f;
+      --panel-bg: #2a2a3d;
+      --text: #e0e0f0;
+      --shadow-light: rgba(255, 255, 255, 0.1);
+      --shadow-dark: rgba(0, 0, 0, 0.7);
+      --accent: #6fa8ff;
+      --btn-bg: var(--panel-bg);
+      --btn-shadow: 6px 6px 10px var(--shadow-dark), -6px -6px 10px var(--shadow-light);
+      --btn-shadow-pressed: inset 6px 6px 10px var(--shadow-dark), inset -6px -6px 10px var(--shadow-light);
+      --border-radius: 16px;
+      --transition: 0.25s ease;
+    }
+
+    body.light {
+      --primary: #3d7be0;
+      --primary-hover: #4f94f7;
+      --bg: #f9f9fc;
+      --panel-bg: #e3e8f5;
+      --text: #1e1e2f;
+      --shadow-light: rgba(255, 255, 255, 0.8);
+      --shadow-dark: rgba(0, 0, 0, 0.15);
+      --accent: #3461d9;
+      --btn-bg: var(--panel-bg);
+      --btn-shadow: 6px 6px 10px var(--shadow-dark), -6px -6px 10px var(--shadow-light);
+      --btn-shadow-pressed: inset 6px 6px 10px var(--shadow-dark), inset -6px -6px 10px var(--shadow-light);
     }
 
     header {
-      background: linear-gradient(90deg, #2b79c2, #1a3d7c);
-      color: #fff;
+      background: var(--panel-bg);
       padding: 1.25rem 2rem;
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: var(--primary);
       text-align: center;
-      font-weight: 600;
-      font-size: 1.5rem;
-      letter-spacing: 0.05em;
-      box-shadow: 0 3px 10px rgb(26 61 124 / 0.3);
+      letter-spacing: 0.06em;
+      box-shadow: 0 4px 8px var(--shadow-dark);
+      user-select: none;
+      position: relative;
     }
 
     main {
-      flex: 1;
       display: flex;
-      overflow: hidden;
-      box-shadow: 0 0 15px rgb(44 62 80 / 0.05);
-      border-radius: 10px;
+      height: calc(100vh - 72px);
       margin: 1rem 2rem;
-      background: #fff;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: 12px 12px 24px var(--shadow-dark),
+                  -12px -12px 24px var(--shadow-light);
+      background: var(--panel-bg);
+      user-select: none;
     }
 
+    /* TOOL PANEL */
     #tools {
-      width: 260px;
-      background: #f7f9fc;
-      border-right: 1px solid #dde6f0;
-      padding: 1.5rem 1.25rem;
+      flex-shrink: 0;
+      width: 280px;
+      background: var(--panel-bg);
+      padding: 2rem 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
-      box-shadow: inset -3px 0 6px rgb(0 0 0 / 0.05);
-      border-top-left-radius: 10px;
-      border-bottom-left-radius: 10px;
+      gap: 2rem;
+      box-shadow: inset 6px 6px 10px var(--shadow-dark),
+                  inset -6px -6px 10px var(--shadow-light);
     }
 
     #tools label {
       font-weight: 600;
-      margin-bottom: 0.4rem;
-      font-size: 0.95rem;
-      color: #34495e;
+      font-size: 1.05rem;
+      color: var(--text);
       user-select: none;
+      margin-bottom: 0.4rem;
+      display: inline-block;
     }
 
-    button, input[type=range], input[type=color] {
-      width: 100%;
-      padding: 0.55rem 0.8rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 1.8px solid transparent;
-      outline-offset: 2px;
-      outline-color: transparent;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.25s ease;
-      background: linear-gradient(135deg, #5078f0, #3461d9);
-      color: white;
-      box-shadow:
-        0 4px 6px rgb(52 97 217 / 0.5),
-        inset 0 -3px 4px rgb(0 0 0 / 0.15);
+    button.tool-btn {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
+      gap: 0.8rem;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.7rem 1rem;
+      border-radius: var(--border-radius);
+      border: none;
+      background: var(--btn-bg);
+      box-shadow: var(--btn-shadow);
+      color: var(--text);
+      cursor: pointer;
+      transition: box-shadow var(--transition), background-color var(--transition), color var(--transition);
+      user-select: none;
+      outline-offset: 4px;
+      outline-color: transparent;
+      outline-style: solid;
+    }
+
+    button.tool-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: var(--primary);
+      filter: drop-shadow(0 0 2px var(--primary));
       user-select: none;
     }
 
-    button svg {
-      width: 18px;
-      height: 18px;
-      fill: white;
-      filter: drop-shadow(0 0 1px rgba(0,0,0,0.3));
+    button.tool-btn:hover:not(.active) {
+      color: var(--primary);
+      box-shadow: var(--btn-shadow-pressed);
+      background-color: var(--btn-bg);
+      outline-color: var(--primary);
     }
 
-    button:hover:not(.active) {
-      background: linear-gradient(135deg, #5c8aff, #4970ee);
-      box-shadow:
-        0 6px 9px rgb(73 112 238 / 0.6),
-        inset 0 -3px 5px rgb(0 0 0 / 0.25);
-    }
-
-    button.active {
-      background: linear-gradient(135deg, #223a8e, #1a2e6f);
-      box-shadow:
-        0 5px 10px rgb(26 45 111 / 0.8),
-        inset 0 -3px 6px rgb(0 0 0 / 0.4);
+    button.tool-btn.active {
+      box-shadow: var(--btn-shadow-pressed);
+      color: var(--primary);
       cursor: default;
     }
 
-    button:focus-visible {
-      outline: 3px solid #5078f0;
-      outline-offset: 3px;
+    button.tool-btn:focus-visible {
+      outline-color: var(--primary);
     }
 
-    input[type=color] {
-      padding: 0.25rem;
-      height: 42px;
-      border-radius: 50%;
-      border: 2px solid #5078f0;
-      background: white;
+    /* Color Picker */
+    input[type="color"] {
       cursor: pointer;
-      box-shadow:
-        0 2px 4px rgb(80 120 240 / 0.4);
-      transition: border-color 0.25s ease;
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      box-shadow: var(--btn-shadow);
+      transition: box-shadow var(--transition);
+      -webkit-appearance: none;
+      -moz-appearance: none;
     }
-
-    input[type=color]:hover,
-    input[type=color]:focus-visible {
-      border-color: #2b79c2;
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+      border-radius: 50%;
+    }
+    input[type="color"]::-webkit-color-swatch {
+      border-radius: 50%;
+    }
+    input[type="color"]:hover,
+    input[type="color"]:focus-visible {
+      box-shadow: var(--btn-shadow-pressed);
       outline: none;
     }
 
-    input[type=range] {
+    /* Brush Size Slider */
+    input[type="range"] {
       -webkit-appearance: none;
+      width: 100%;
       height: 8px;
-      background: #d1d8e8;
-      border-radius: 6px;
+      border-radius: 8px;
+      background: var(--btn-bg);
+      box-shadow: inset 6px 6px 10px var(--shadow-dark),
+                  inset -6px -6px 10px var(--shadow-light);
       cursor: pointer;
-      margin-top: 0.3rem;
+      margin-top: 0.5rem;
+      transition: box-shadow var(--transition);
     }
-    input[type=range]::-webkit-slider-thumb {
+    input[type="range"]:hover,
+    input[type="range"]:focus-visible {
+      box-shadow: inset 4px 4px 6px var(--shadow-dark),
+                  inset -4px -4px 6px var(--shadow-light);
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 22px;
-      height: 22px;
-      background: #5078f0;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
+      background: var(--primary);
       cursor: pointer;
+      box-shadow: 0 0 10px var(--primary);
+      transition: background-color 0.3s ease;
+      margin-top: -8px;
       border: none;
-      box-shadow: 0 0 6px rgba(80, 120, 240, 0.7);
-      transition: background-color 0.25s ease;
-      margin-top: -7px;
     }
-    input[type=range]:focus-visible::-webkit-slider-thumb {
-      outline: 3px solid #2b79c2;
+    input[type="range"]:focus-visible::-webkit-slider-thumb {
+      outline: 3px solid var(--primary);
       outline-offset: 2px;
     }
-    input[type=range]::-moz-range-thumb {
-      width: 22px;
-      height: 22px;
-      background: #5078f0;
+    input[type="range"]::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
-      border: none;
+      background: var(--primary);
       cursor: pointer;
-      box-shadow: 0 0 6px rgba(80, 120, 240, 0.7);
-      transition: background-color 0.25s ease;
+      border: none;
+      box-shadow: 0 0 10px var(--primary);
+      transition: background-color 0.3s ease;
     }
-    input[type=range]:focus-visible::-moz-range-thumb {
-      outline: 3px solid #2b79c2;
+    input[type="range"]:focus-visible::-moz-range-thumb {
+      outline: 3px solid var(--primary);
       outline-offset: 2px;
     }
 
+    /* Canvas Container */
     #canvas-container {
-      flex: 1;
-      background: white;
+      flex-grow: 1;
+      background: var(--bg);
+      padding: 2rem;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      box-shadow: inset 4px 4px 12px var(--shadow-dark),
+                  inset -4px -4px 12px var(--shadow-light);
       position: relative;
-      padding: 1rem;
-      border-radius: 0 10px 10px 0;
-      box-shadow: inset 0 0 15px rgb(80 120 240 / 0.12);
+      user-select: none;
     }
-
     canvas {
-      border-radius: 8px;
-      border: 2px solid #5078f0;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      cursor: crosshair;
       max-width: 100%;
       max-height: 100%;
-      cursor: crosshair;
-      touch-action: none; /* prevent scrolling on touch */
-      box-shadow:
-        0 10px 30px rgb(80 120 240 / 0.2);
-      background: white;
+      user-select: none;
+      touch-action: none;
     }
 
+    /* Gallery */
     #gallery {
-      background: #f7f9fc;
-      border-left: 1px solid #dde6f0;
       width: 300px;
-      padding: 1.5rem 1.25rem;
+      background: var(--panel-bg);
+      padding: 2rem 1.5rem;
       overflow-y: auto;
-      border-top-right-radius: 10px;
-      border-bottom-right-radius: 10px;
-      box-shadow: inset 3px 0 6px rgb(0 0 0 / 0.05);
+      border-left: 1px solid #333650;
+      box-shadow: inset -6px -6px 10px var(--shadow-light),
+                  inset 6px 6px 10px var(--shadow-dark);
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      display: flex;
+      flex-direction: column;
+      gap: 1.3rem;
+      user-select: none;
     }
 
     #gallery h2 {
-      margin-top: 0;
-      font-weight: 600;
-      font-size: 1.15rem;
-      color: #34495e;
-      border-bottom: 1.5px solid #5078f0;
-      padding-bottom: 0.7rem;
-      letter-spacing: 0.03em;
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.25rem;
+      letter-spacing: 0.04em;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 0.5rem;
       user-select: none;
     }
 
     .thumb {
-      border: 1.5px solid #d1d8e8;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      cursor: pointer;
       position: relative;
-      box-shadow:
-        0 2px 5px rgb(80 120 240 / 0.12);
+      cursor: pointer;
+      border-radius: 12px;
       overflow: hidden;
-      transition: transform 0.2s ease;
+      box-shadow: 6px 6px 12px var(--shadow-dark),
+                  -6px -6px 12px var(--shadow-light);
+      transition: transform 0.25s ease;
     }
-
     .thumb:hover {
-      transform: scale(1.04);
-      box-shadow:
-        0 5px 15px rgb(80 120 240 / 0.3);
+      transform: scale(1.05);
+      box-shadow: 8px 8px 16px var(--shadow-dark),
+                  -8px -8px 16px var(--shadow-light);
     }
-
     .thumb img {
-      width: 100%;
       display: block;
-      border-radius: 8px;
-      pointer-events: none;
+      width: 100%;
+      height: auto;
       user-select: none;
+      pointer-events: none;
     }
-
     .thumb button.delete {
       position: absolute;
-      top: 6px;
-      right: 6px;
+      top: 8px;
+      right: 8px;
       background: #e74c3c;
       border: none;
       color: white;
+      border-radius: 6px;
+      padding: 4px 9px;
       font-weight: 700;
-      border-radius: 4px;
       cursor: pointer;
-      padding: 2px 8px;
-      font-size: 1.1rem;
-      line-height: 1;
-      box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
       transition: background-color 0.3s ease;
       user-select: none;
     }
-
     .thumb button.delete:hover {
       background: #c0392b;
+    }
+
+    /* Dark/Light Mode Toggle */
+    #modeToggle {
+      position: absolute;
+      top: 12px;
+      right: 24px;
+      background: var(--btn-bg);
+      border-radius: 50%;
+      border: none;
+      width: 36px;
+      height: 36px;
+      box-shadow: var(--btn-shadow);
+      cursor: pointer;
+      transition: box-shadow var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    #modeToggle:hover {
+      box-shadow: var(--btn-shadow-pressed);
+    }
+    #modeToggle svg {
+      fill: var(--primary);
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Accessibility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
     }
 
     /* Responsive */
@@ -275,50 +359,64 @@
       main {
         flex-direction: column;
         margin: 1rem;
-        border-radius: 10px;
-        box-shadow: 0 0 20px rgb(44 62 80 / 0.1);
+        height: auto;
+        border-radius: var(--border-radius);
+        box-shadow: 12px 12px 24px var(--shadow-dark),
+                    -12px -12px 24px var(--shadow-light);
       }
       #tools, #gallery {
         width: 100%;
-        height: 200px;
-        overflow-x: auto;
-        border-left: none !important;
-        border-right: none !important;
-        border-top: 1px solid #dde6f0;
-        border-bottom: 1px solid #dde6f0;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-      }
-      #gallery {
-        height: 150px;
+        height: auto;
+        border-radius: var(--border-radius);
+        box-shadow: inset 6px 6px 10px var(--shadow-dark),
+                    inset -6px -6px 10px var(--shadow-light);
+        padding: 1.5rem 1rem;
+        margin-bottom: 1rem;
       }
       #canvas-container {
-        flex: 1 0 auto;
-        border-radius: 0 0 10px 10px;
-        box-shadow: inset 0 0 15px rgb(80 120 240 / 0.12);
+        padding: 1rem;
+        border-radius: var(--border-radius);
+        box-shadow: inset 4px 4px 12px var(--shadow-dark),
+                    inset -4px -4px 12px var(--shadow-light);
       }
     }
   </style>
 </head>
 <body>
-  <header>RespawnedCode Professional Drawing App</header>
+
+  <header>
+    RespawnedCode Pro Drawing App
+    <button id="modeToggle" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">
+      <!-- Sun / Moon Icon -->
+      <svg id="modeIcon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 2a9.93 9.93 0 0 0-2 .23 7 7 0 1 1 8.54 8.54A9.93 9.93 0 0 0 12 2z"/>
+      </svg>
+    </button>
+  </header>
+
   <main>
-    <section id="tools" aria-label="Drawing Tools">
-      <label>Tool</label>
-      <button id="brush" class="active" aria-pressed="true" title="Brush tool">
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 16c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm14.7-6.29-1.41-1.41-3.3 3.3-2.79-2.79-6.83 6.83a.996.996 0 000 1.41l2.54 2.54a.996.996 0 001.41 0l6.83-6.83-2.8-2.79 3.3-3.3z"/></svg> Brush
+    <section id="tools" aria-label="Drawing tools">
+      <label for="brush" style="margin-bottom:0.5rem;">Tool</label>
+      <button id="brush" class="tool-btn active" aria-pressed="true" title="Brush Tool">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M7 16c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm14.7-6.29-1.41-1.41-3.3 3.3-2.79-2.79-6.83 6.83a.996.996 0 000 1.41l2.54 2.54a.996.996 0 001.41 0l6.83-6.83-2.8-2.79 3.3-3.3z"/>
+        </svg> Brush
       </button>
-      <button id="eraser" aria-pressed="false" title="Eraser tool">
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16.24 3.56L6.29 13.51a2 2 0 00-.59 1.41c0 .56.23 1.07.59 1.43l2.48 2.48a2.006 2.006 0 002.83 0l9.95-9.95-4.9-4.9z"/></svg> Eraser
+      <button id="eraser" class="tool-btn" aria-pressed="false" title="Eraser Tool">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M16.24 3.56L6.29 13.51a2 2 0 00-.59 1.41c0 .56.23 1.07.59 1.43l2.48 2.48a2.006 2.006 0 002.83 0l9.95-9.95-4.9-4.9z"/>
+        </svg> Eraser
       </button>
-      <button id="undo" title="Undo last action">
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v2c3.87 0 7 3.13 7 7a7 7 0 01-12 5l-2-2"/></svg> Undo
+      <button id="undo" class="tool-btn" title="Undo last action">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M12 5v2c3.87 0 7 3.13 7 7a7 7 0 01-12 5l-2-2"/>
+        </svg> Undo
       </button>
 
-      <label for="colorPicker" style="margin-top:1.5rem;">Color</label>
-      <input type="color" id="colorPicker" aria-label="Select brush color" value="#000000" />
+      <label for="colorPicker">Color</label>
+      <input type="color" id="colorPicker" aria-label="Select brush color" value="#4f94f7" />
 
-      <label for="brushSize" style="margin-top:1.5rem;">Brush Size</label>
+      <label for="brushSize">Brush Size</label>
       <input type="range" id="brushSize" min="1" max="50" value="5" aria-valuemin="1" aria-valuemax="50" aria-valuenow="5" aria-label="Select brush size" />
     </section>
 
@@ -327,14 +425,34 @@
       <p id="canvasDesc" class="sr-only">Canvas for drawing with brush and eraser tools</p>
     </section>
 
-    <section id="gallery" aria-label="Drawing Gallery">
+    <section id="gallery" aria-label="Drawing gallery">
       <h2>Gallery</h2>
-      <!-- Thumbnails will appear here -->
+      <!-- Thumbnails go here -->
     </section>
   </main>
 
   <script>
-    // You can insert your drawing app's JavaScript here, or let me know if you'd like me to help with that next!
+    // Dark/Light Mode Toggle
+    const modeToggle = document.getElementById('modeToggle');
+    const modeIcon = document.getElementById('modeIcon');
+    const body = document.body;
+
+    function updateModeIcon() {
+      if (body.classList.contains('light')) {
+        // Sun icon
+        modeIcon.innerHTML = '<path d="M12 18a6 6 0 100-12 6 6 0 000 12zm0 4v-2a8 8 0 100-12v2a6 6 0 000 10v2z"/>';
+      } else {
+        // Moon icon
+        modeIcon.innerHTML = '<path d="M12 2a9.93 9.93 0 0 0-2 .23 7 7 0 1 1 8.54 8.54A9.93 9.93 0 0 0 12 2z"/>';
+      }
+    }
+
+    modeToggle.addEventListener('click', () => {
+      body.classList.toggle('light');
+      updateModeIcon();
+    });
+
+    updateModeIcon();
   </script>
 </body>
 </html>
