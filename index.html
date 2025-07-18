@@ -1,458 +1,451 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RespawnedCode Pro Drawing App</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RespawnedCode Grayscale Drawing App</title>
 
-  <!-- Inter font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  /* Reset */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html, body {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #222;
+    color: #ddd;
+    user-select: none;
+  }
 
-  <style>
-    /* CSS Reset */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+  body.light {
+    background: #eee;
+    color: #333;
+  }
 
-    html, body {
-      height: 100%;
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      transition: background-color 0.4s ease, color 0.4s ease;
-      user-select: none;
-    }
+  header {
+    background: #333;
+    color: #ccc;
+    padding: 1rem 2rem;
+    font-weight: 700;
+    font-size: 1.8rem;
+    text-align: center;
+    letter-spacing: 0.05em;
+    user-select: none;
+    position: relative;
+  }
+  body.light header {
+    background: #ddd;
+    color: #555;
+  }
 
-    :root {
-      --primary: #4f94f7;
-      --primary-hover: #3d7be0;
-      --bg: #1e1e2f;
-      --panel-bg: #2a2a3d;
-      --text: #e0e0f0;
-      --shadow-light: rgba(255, 255, 255, 0.1);
-      --shadow-dark: rgba(0, 0, 0, 0.7);
-      --accent: #6fa8ff;
-      --btn-bg: var(--panel-bg);
-      --btn-shadow: 6px 6px 10px var(--shadow-dark), -6px -6px 10px var(--shadow-light);
-      --btn-shadow-pressed: inset 6px 6px 10px var(--shadow-dark), inset -6px -6px 10px var(--shadow-light);
-      --border-radius: 16px;
-      --transition: 0.25s ease;
-    }
+  main {
+    display: flex;
+    height: calc(100vh - 72px);
+    margin: 1rem 2rem;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #333;
+  }
+  body.light main {
+    background: #ccc;
+  }
 
-    body.light {
-      --primary: #3d7be0;
-      --primary-hover: #4f94f7;
-      --bg: #f9f9fc;
-      --panel-bg: #e3e8f5;
-      --text: #1e1e2f;
-      --shadow-light: rgba(255, 255, 255, 0.8);
-      --shadow-dark: rgba(0, 0, 0, 0.15);
-      --accent: #3461d9;
-      --btn-bg: var(--panel-bg);
-      --btn-shadow: 6px 6px 10px var(--shadow-dark), -6px -6px 10px var(--shadow-light);
-      --btn-shadow-pressed: inset 6px 6px 10px var(--shadow-dark), inset -6px -6px 10px var(--shadow-light);
-    }
+  #tools {
+    flex-shrink: 0;
+    width: 260px;
+    background: #2a2a2a;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+    user-select: none;
+  }
+  body.light #tools {
+    background: #ddd;
+    color: #222;
+  }
 
-    header {
-      background: var(--panel-bg);
-      padding: 1.25rem 2rem;
-      font-weight: 700;
-      font-size: 1.8rem;
-      color: var(--primary);
-      text-align: center;
-      letter-spacing: 0.06em;
-      box-shadow: 0 4px 8px var(--shadow-dark);
-      user-select: none;
-      position: relative;
-    }
+  #tools label {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+    display: inline-block;
+  }
 
+  button.tool-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.65rem 1rem;
+    border-radius: 12px;
+    border: 2px solid #555;
+    background: #444;
+    color: #ccc;
+    cursor: pointer;
+    transition: background 0.25s ease, border-color 0.25s ease;
+    user-select: none;
+  }
+  body.light button.tool-btn {
+    border-color: #999;
+    background: #eee;
+    color: #333;
+  }
+  button.tool-btn:hover:not(.active) {
+    background: #555;
+    border-color: #888;
+  }
+  body.light button.tool-btn:hover:not(.active) {
+    background: #ddd;
+    border-color: #666;
+  }
+  button.tool-btn.active {
+    background: #999;
+    border-color: #bbb;
+    color: #222;
+    cursor: default;
+  }
+  body.light button.tool-btn.active {
+    background: #bbb;
+    border-color: #888;
+    color: #111;
+  }
+
+  button.tool-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    user-select: none;
+  }
+
+  input[type="color"] {
+    display: none; /* hiding color picker as per grayscale */
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 8px;
+    background: #444;
+    cursor: pointer;
+  }
+  input[type="range"]:focus {
+    outline: none;
+    background: #555;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #999;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 1.5px solid #666;
+    margin-top: -6px;
+  }
+  input[type="range"]:focus::-webkit-slider-thumb {
+    border-color: #bbb;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #999;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 1.5px solid #666;
+  }
+  input[type="range"]:focus::-moz-range-thumb {
+    border-color: #bbb;
+  }
+
+  #canvas-container {
+    flex-grow: 1;
+    background: #eee;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  body.light #canvas-container {
+    background: #fff;
+  }
+
+  canvas {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    cursor: crosshair;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  #gallery {
+    width: 260px;
+    background: #2a2a2a;
+    padding: 1.8rem 1rem;
+    overflow-y: auto;
+    border-left: 1px solid #444;
+    user-select: none;
+  }
+  body.light #gallery {
+    background: #ddd;
+    border-left: 1px solid #bbb;
+  }
+  #gallery h2 {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #ccc;
+    border-bottom: 2px solid #555;
+    margin-bottom: 1rem;
+  }
+  body.light #gallery h2 {
+    color: #444;
+    border-bottom-color: #bbb;
+  }
+
+  .thumb {
+    position: relative;
+    cursor: pointer;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 3px 3px 8px #111;
+    margin-bottom: 1rem;
+  }
+  body.light .thumb {
+    box-shadow: 3px 3px 8px #999;
+  }
+  .thumb img {
+    width: 100%;
+    display: block;
+  }
+  .thumb button.delete {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: #555;
+    border: none;
+    color: #eee;
+    border-radius: 6px;
+    padding: 2px 7px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .thumb button.delete:hover {
+    background: #888;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
     main {
-      display: flex;
-      height: calc(100vh - 72px);
-      margin: 1rem 2rem;
-      border-radius: var(--border-radius);
-      overflow: hidden;
-      box-shadow: 12px 12px 24px var(--shadow-dark),
-                  -12px -12px 24px var(--shadow-light);
-      background: var(--panel-bg);
-      user-select: none;
-    }
-
-    /* TOOL PANEL */
-    #tools {
-      flex-shrink: 0;
-      width: 280px;
-      background: var(--panel-bg);
-      padding: 2rem 1.5rem;
-      display: flex;
       flex-direction: column;
-      gap: 2rem;
-      box-shadow: inset 6px 6px 10px var(--shadow-dark),
-                  inset -6px -6px 10px var(--shadow-light);
+      height: auto;
+      margin: 1rem;
     }
-
-    #tools label {
-      font-weight: 600;
-      font-size: 1.05rem;
-      color: var(--text);
-      user-select: none;
-      margin-bottom: 0.4rem;
-      display: inline-block;
-    }
-
-    button.tool-btn {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-weight: 600;
-      font-size: 1rem;
-      padding: 0.7rem 1rem;
-      border-radius: var(--border-radius);
-      border: none;
-      background: var(--btn-bg);
-      box-shadow: var(--btn-shadow);
-      color: var(--text);
-      cursor: pointer;
-      transition: box-shadow var(--transition), background-color var(--transition), color var(--transition);
-      user-select: none;
-      outline-offset: 4px;
-      outline-color: transparent;
-      outline-style: solid;
-    }
-
-    button.tool-btn svg {
-      width: 20px;
-      height: 20px;
-      fill: var(--primary);
-      filter: drop-shadow(0 0 2px var(--primary));
-      user-select: none;
-    }
-
-    button.tool-btn:hover:not(.active) {
-      color: var(--primary);
-      box-shadow: var(--btn-shadow-pressed);
-      background-color: var(--btn-bg);
-      outline-color: var(--primary);
-    }
-
-    button.tool-btn.active {
-      box-shadow: var(--btn-shadow-pressed);
-      color: var(--primary);
-      cursor: default;
-    }
-
-    button.tool-btn:focus-visible {
-      outline-color: var(--primary);
-    }
-
-    /* Color Picker */
-    input[type="color"] {
-      cursor: pointer;
-      border: none;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      box-shadow: var(--btn-shadow);
-      transition: box-shadow var(--transition);
-      -webkit-appearance: none;
-      -moz-appearance: none;
-    }
-    input[type="color"]::-webkit-color-swatch-wrapper {
-      padding: 0;
-      border-radius: 50%;
-    }
-    input[type="color"]::-webkit-color-swatch {
-      border-radius: 50%;
-    }
-    input[type="color"]:hover,
-    input[type="color"]:focus-visible {
-      box-shadow: var(--btn-shadow-pressed);
-      outline: none;
-    }
-
-    /* Brush Size Slider */
-    input[type="range"] {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 8px;
-      border-radius: 8px;
-      background: var(--btn-bg);
-      box-shadow: inset 6px 6px 10px var(--shadow-dark),
-                  inset -6px -6px 10px var(--shadow-light);
-      cursor: pointer;
-      margin-top: 0.5rem;
-      transition: box-shadow var(--transition);
-    }
-    input[type="range"]:hover,
-    input[type="range"]:focus-visible {
-      box-shadow: inset 4px 4px 6px var(--shadow-dark),
-                  inset -4px -4px 6px var(--shadow-light);
-      outline: none;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--primary);
-      cursor: pointer;
-      box-shadow: 0 0 10px var(--primary);
-      transition: background-color 0.3s ease;
-      margin-top: -8px;
-      border: none;
-    }
-    input[type="range"]:focus-visible::-webkit-slider-thumb {
-      outline: 3px solid var(--primary);
-      outline-offset: 2px;
-    }
-    input[type="range"]::-moz-range-thumb {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--primary);
-      cursor: pointer;
-      border: none;
-      box-shadow: 0 0 10px var(--primary);
-      transition: background-color 0.3s ease;
-    }
-    input[type="range"]:focus-visible::-moz-range-thumb {
-      outline: 3px solid var(--primary);
-      outline-offset: 2px;
-    }
-
-    /* Canvas Container */
-    #canvas-container {
-      flex-grow: 1;
-      background: var(--bg);
-      padding: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 0 var(--border-radius) var(--border-radius) 0;
-      box-shadow: inset 4px 4px 12px var(--shadow-dark),
-                  inset -4px -4px 12px var(--shadow-light);
-      position: relative;
-      user-select: none;
-    }
-    canvas {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      cursor: crosshair;
-      max-width: 100%;
-      max-height: 100%;
-      user-select: none;
-      touch-action: none;
-    }
-
-    /* Gallery */
-    #gallery {
-      width: 300px;
-      background: var(--panel-bg);
-      padding: 2rem 1.5rem;
-      overflow-y: auto;
-      border-left: 1px solid #333650;
-      box-shadow: inset -6px -6px 10px var(--shadow-light),
-                  inset 6px 6px 10px var(--shadow-dark);
-      border-radius: 0 0 var(--border-radius) var(--border-radius);
-      display: flex;
-      flex-direction: column;
-      gap: 1.3rem;
-      user-select: none;
-    }
-
-    #gallery h2 {
-      font-weight: 700;
-      color: var(--primary);
-      font-size: 1.25rem;
-      letter-spacing: 0.04em;
-      border-bottom: 2px solid var(--primary);
-      padding-bottom: 0.5rem;
-      user-select: none;
-    }
-
-    .thumb {
-      position: relative;
-      cursor: pointer;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 6px 6px 12px var(--shadow-dark),
-                  -6px -6px 12px var(--shadow-light);
-      transition: transform 0.25s ease;
-    }
-    .thumb:hover {
-      transform: scale(1.05);
-      box-shadow: 8px 8px 16px var(--shadow-dark),
-                  -8px -8px 16px var(--shadow-light);
-    }
-    .thumb img {
-      display: block;
+    #tools, #gallery {
       width: 100%;
       height: auto;
-      user-select: none;
-      pointer-events: none;
+      margin-bottom: 1rem;
     }
-    .thumb button.delete {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: #e74c3c;
-      border: none;
-      color: white;
-      border-radius: 6px;
-      padding: 4px 9px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-      transition: background-color 0.3s ease;
-      user-select: none;
+    #canvas-container {
+      padding: 1rem;
     }
-    .thumb button.delete:hover {
-      background: #c0392b;
-    }
-
-    /* Dark/Light Mode Toggle */
-    #modeToggle {
-      position: absolute;
-      top: 12px;
-      right: 24px;
-      background: var(--btn-bg);
-      border-radius: 50%;
-      border: none;
-      width: 36px;
-      height: 36px;
-      box-shadow: var(--btn-shadow);
-      cursor: pointer;
-      transition: box-shadow var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      user-select: none;
-    }
-    #modeToggle:hover {
-      box-shadow: var(--btn-shadow-pressed);
-    }
-    #modeToggle svg {
-      fill: var(--primary);
-      width: 20px;
-      height: 20px;
-    }
-
-    /* Accessibility */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0,0,0,0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      main {
-        flex-direction: column;
-        margin: 1rem;
-        height: auto;
-        border-radius: var(--border-radius);
-        box-shadow: 12px 12px 24px var(--shadow-dark),
-                    -12px -12px 24px var(--shadow-light);
-      }
-      #tools, #gallery {
-        width: 100%;
-        height: auto;
-        border-radius: var(--border-radius);
-        box-shadow: inset 6px 6px 10px var(--shadow-dark),
-                    inset -6px -6px 10px var(--shadow-light);
-        padding: 1.5rem 1rem;
-        margin-bottom: 1rem;
-      }
-      #canvas-container {
-        padding: 1rem;
-        border-radius: var(--border-radius);
-        box-shadow: inset 4px 4px 12px var(--shadow-dark),
-                    inset -4px -4px 12px var(--shadow-light);
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
 
-  <header>
-    RespawnedCode Pro Drawing App
-    <button id="modeToggle" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">
-      <!-- Sun / Moon Icon -->
-      <svg id="modeIcon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M12 2a9.93 9.93 0 0 0-2 .23 7 7 0 1 1 8.54 8.54A9.93 9.93 0 0 0 12 2z"/>
-      </svg>
+<header>RespawnedCode Grayscale Drawing App</header>
+
+<main>
+  <section id="tools" aria-label="Drawing tools">
+    <label>Tool</label>
+    <button id="brush" class="tool-btn active" aria-pressed="true" title="Brush Tool">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M7 16c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm14.7-6.29-1.41-1.41-3.3 3.3-2.79-2.79-6.83 6.83a.996.996 0 000 1.41l2.54 2.54a.996.996 0 001.41 0l6.83-6.83-2.8-2.79 3.3-3.3z"/>
+      </svg> Brush
     </button>
-  </header>
+    <button id="eraser" class="tool-btn" aria-pressed="false" title="Eraser Tool">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M16.24 3.56L6.29 13.51a2 2 0 00-.59 1.41c0 .56.23 1.07.59 1.43l2.48 2.48a2.006 2.006 0 002.83 0l9.95-9.95-4.9-4.9z"/>
+      </svg> Eraser
+    </button>
+    <button id="undo" class="tool-btn" title="Undo last action">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 5v2c3.87 0 7 3.13 7 7a7 7 0 01-12 5l-2-2"/>
+      </svg> Undo
+    </button>
 
-  <main>
-    <section id="tools" aria-label="Drawing tools">
-      <label for="brush" style="margin-bottom:0.5rem;">Tool</label>
-      <button id="brush" class="tool-btn active" aria-pressed="true" title="Brush Tool">
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M7 16c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm14.7-6.29-1.41-1.41-3.3 3.3-2.79-2.79-6.83 6.83a.996.996 0 000 1.41l2.54 2.54a.996.996 0 001.41 0l6.83-6.83-2.8-2.79 3.3-3.3z"/>
-        </svg> Brush
-      </button>
-      <button id="eraser" class="tool-btn" aria-pressed="false" title="Eraser Tool">
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M16.24 3.56L6.29 13.51a2 2 0 00-.59 1.41c0 .56.23 1.07.59 1.43l2.48 2.48a2.006 2.006 0 002.83 0l9.95-9.95-4.9-4.9z"/>
-        </svg> Eraser
-      </button>
-      <button id="undo" class="tool-btn" title="Undo last action">
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M12 5v2c3.87 0 7 3.13 7 7a7 7 0 01-12 5l-2-2"/>
-        </svg> Undo
-      </button>
+    <label for="brushSize">Brush Size</label>
+    <input type="range" id="brushSize" min="1" max="50" value="5" aria-label="Select brush size" />
 
-      <label for="colorPicker">Color</label>
-      <input type="color" id="colorPicker" aria-label="Select brush color" value="#4f94f7" />
+    <button id="saveBtn" class="tool-btn" title="Save drawing to gallery">Save Drawing</button>
+  </section>
 
-      <label for="brushSize">Brush Size</label>
-      <input type="range" id="brushSize" min="1" max="50" value="5" aria-valuemin="1" aria-valuemax="50" aria-valuenow="5" aria-label="Select brush size" />
-    </section>
+  <section id="canvas-container" aria-label="Drawing canvas">
+    <canvas id="canvas" width="800" height="600" aria-describedby="canvasDesc"></canvas>
+    <p id="canvasDesc" class="sr-only">Canvas for drawing with brush and eraser tools</p>
+  </section>
 
-    <section id="canvas-container" aria-label="Drawing canvas">
-      <canvas id="canvas" width="800" height="600" aria-describedby="canvasDesc"></canvas>
-      <p id="canvasDesc" class="sr-only">Canvas for drawing with brush and eraser tools</p>
-    </section>
+  <section id="gallery" aria-label="Drawing gallery">
+    <h2>Gallery</h2>
+    <!-- Saved images thumbnails will appear here -->
+  </section>
+</main>
 
-    <section id="gallery" aria-label="Drawing gallery">
-      <h2>Gallery</h2>
-      <!-- Thumbnails go here -->
-    </section>
-  </main>
+<script>
+  // Setup canvas and context
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
 
-  <script>
-    // Dark/Light Mode Toggle
-    const modeToggle = document.getElementById('modeToggle');
-    const modeIcon = document.getElementById('modeIcon');
-    const body = document.body;
+  // Set initial canvas white background
+  function clearCanvas() {
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+  clearCanvas();
 
-    function updateModeIcon() {
-      if (body.classList.contains('light')) {
-        // Sun icon
-        modeIcon.innerHTML = '<path d="M12 18a6 6 0 100-12 6 6 0 000 12zm0 4v-2a8 8 0 100-12v2a6 6 0 000 10v2z"/>';
-      } else {
-        // Moon icon
-        modeIcon.innerHTML = '<path d="M12 2a9.93 9.93 0 0 0-2 .23 7 7 0 1 1 8.54 8.54A9.93 9.93 0 0 0 12 2z"/>';
-      }
+  let drawing = false;
+  let currentTool = 'brush';
+  let brushSize = 5;
+  let brushColor = '#222'; // Dark gray for brush
+  let undoStack = [];
+
+  // Save state for undo
+  function saveState() {
+    if(undoStack.length >= 10) undoStack.shift(); // max 10 undos
+    undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+  }
+
+  // Restore last state
+  function undo() {
+    if(undoStack.length > 0) {
+      const imageData = undoStack.pop();
+      ctx.putImageData(imageData, 0, 0);
     }
+  }
 
-    modeToggle.addEventListener('click', () => {
-      body.classList.toggle('light');
-      updateModeIcon();
+  // Start drawing
+  function startDraw(e) {
+    drawing = true;
+    ctx.beginPath();
+    const pos = getMousePos(e);
+    ctx.moveTo(pos.x, pos.y);
+    saveState();
+  }
+  // Stop drawing
+  function stopDraw() {
+    drawing = false;
+  }
+
+  // Get mouse/touch position relative to canvas
+  function getMousePos(e) {
+    const rect = canvas.getBoundingClientRect();
+    let x, y;
+    if(e.touches) {
+      x = e.touches[0].clientX - rect.left;
+      y = e.touches[0].clientY - rect.top;
+    } else {
+      x = e.clientX - rect.left;
+      y = e.clientY - rect.top;
+    }
+    return {x, y};
+  }
+
+  // Drawing move
+  function draw(e) {
+    if(!drawing) return;
+    const pos = getMousePos(e);
+    if(currentTool === 'brush') {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = brushColor;
+    } else if(currentTool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.strokeStyle = 'rgba(0,0,0,1)';
+    }
+    ctx.lineWidth = brushSize;
+    ctx.lineCap = 'round';
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+  }
+
+  // Tool buttons toggle
+  const brushBtn = document.getElementById('brush');
+  const eraserBtn = document.getElementById('eraser');
+  const undoBtn = document.getElementById('undo');
+  const brushSizeInput = document.getElementById('brushSize');
+  const saveBtn = document.getElementById('saveBtn');
+
+  function setActiveTool(tool) {
+    currentTool = tool;
+    brushBtn.classList.toggle('active', tool === 'brush');
+    brushBtn.setAttribute('aria-pressed', tool === 'brush');
+    eraserBtn.classList.toggle('active', tool === 'eraser');
+    eraserBtn.setAttribute('aria-pressed', tool === 'eraser');
+  }
+
+  brushBtn.addEventListener('click', () => setActiveTool('brush'));
+  eraserBtn.addEventListener('click', () => setActiveTool('eraser'));
+  undoBtn.addEventListener('click', undo);
+  brushSizeInput.addEventListener('input', (e) => {
+    brushSize = e.target.value;
+  });
+
+  // Save drawing to gallery
+  const gallery = document.getElementById('gallery');
+  function addThumbnail(dataURL) {
+    const thumbDiv = document.createElement('div');
+    thumbDiv.className = 'thumb';
+
+    const img = document.createElement('img');
+    img.src = dataURL;
+    img.alt = 'Saved drawing thumbnail';
+
+    const delBtn = document.createElement('button');
+    delBtn.textContent = '×';
+    delBtn.className = 'delete';
+    delBtn.title = 'Delete this drawing';
+
+    delBtn.addEventListener('click', () => {
+      gallery.removeChild(thumbDiv);
     });
 
-    updateModeIcon();
-  </script>
+    thumbDiv.appendChild(img);
+    thumbDiv.appendChild(delBtn);
+    gallery.appendChild(thumbDiv);
+  }
+
+  saveBtn.addEventListener('click', () => {
+    const dataURL = canvas.toDataURL('image/png');
+    addThumbnail(dataURL);
+  });
+
+  // Mouse and touch events for drawing
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mouseup', stopDraw);
+  canvas.addEventListener('mouseout', stopDraw);
+  canvas.addEventListener('mousemove', draw);
+
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    startDraw(e);
+  }, {passive: false});
+  canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    stopDraw();
+  }, {passive: false});
+  canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    draw(e);
+  }, {passive: false});
+
+</script>
+
 </body>
 </html>
