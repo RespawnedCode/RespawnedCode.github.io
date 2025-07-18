@@ -3,26 +3,17 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MADE BY KAY</title>
+<title>Kay’s Drawing Site — Grayscale Drawing App</title>
 
 <style>
-  /* Reset */
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+  /* Reset and base */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
     height: 100%;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #222;
     color: #ddd;
     user-select: none;
-  }
-
-  body.light {
-    background: #eee;
-    color: #333;
   }
 
   header {
@@ -34,11 +25,6 @@
     text-align: center;
     letter-spacing: 0.05em;
     user-select: none;
-    position: relative;
-  }
-  body.light header {
-    background: #ddd;
-    color: #555;
   }
 
   main {
@@ -49,23 +35,15 @@
     overflow: hidden;
     background: #333;
   }
-  body.light main {
-    background: #ccc;
-  }
 
   #tools {
     flex-shrink: 0;
-    width: 260px;
+    width: 320px;
     background: #2a2a2a;
     padding: 2rem 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1.8rem;
-    user-select: none;
-  }
-  body.light #tools {
-    background: #ddd;
-    color: #222;
+    gap: 1.2rem;
   }
 
   #tools label {
@@ -81,49 +59,25 @@
     gap: 0.7rem;
     font-weight: 600;
     font-size: 1rem;
-    padding: 0.65rem 1rem;
+    padding: 0.6rem 1rem;
     border-radius: 12px;
     border: 2px solid #555;
     background: #444;
     color: #ccc;
     cursor: pointer;
     transition: background 0.25s ease, border-color 0.25s ease;
-    user-select: none;
   }
-  body.light button.tool-btn {
-    border-color: #999;
-    background: #eee;
-    color: #333;
-  }
+
   button.tool-btn:hover:not(.active) {
     background: #555;
     border-color: #888;
   }
-  body.light button.tool-btn:hover:not(.active) {
-    background: #ddd;
-    border-color: #666;
-  }
+
   button.tool-btn.active {
     background: #999;
     border-color: #bbb;
     color: #222;
     cursor: default;
-  }
-  body.light button.tool-btn.active {
-    background: #bbb;
-    border-color: #888;
-    color: #111;
-  }
-
-  button.tool-btn svg {
-    width: 20px;
-    height: 20px;
-    fill: currentColor;
-    user-select: none;
-  }
-
-  input[type="color"] {
-    display: none; /* hiding color picker as per grayscale */
   }
 
   input[type="range"] {
@@ -134,10 +88,7 @@
     background: #444;
     cursor: pointer;
   }
-  input[type="range"]:focus {
-    outline: none;
-    background: #555;
-  }
+
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -149,9 +100,7 @@
     border: 1.5px solid #666;
     margin-top: -6px;
   }
-  input[type="range"]:focus::-webkit-slider-thumb {
-    border-color: #bbb;
-  }
+
   input[type="range"]::-moz-range-thumb {
     width: 20px;
     height: 20px;
@@ -159,9 +108,6 @@
     cursor: pointer;
     border-radius: 50%;
     border: 1.5px solid #666;
-  }
-  input[type="range"]:focus::-moz-range-thumb {
-    border-color: #bbb;
   }
 
   #canvas-container {
@@ -171,9 +117,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  body.light #canvas-container {
-    background: #fff;
+    position: relative;
   }
 
   canvas {
@@ -186,27 +130,19 @@
   }
 
   #gallery {
-    width: 260px;
+    width: 280px;
     background: #2a2a2a;
     padding: 1.8rem 1rem;
     overflow-y: auto;
     border-left: 1px solid #444;
-    user-select: none;
   }
-  body.light #gallery {
-    background: #ddd;
-    border-left: 1px solid #bbb;
-  }
+
   #gallery h2 {
     font-weight: 700;
     font-size: 1.3rem;
     color: #ccc;
     border-bottom: 2px solid #555;
     margin-bottom: 1rem;
-  }
-  body.light #gallery h2 {
-    color: #444;
-    border-bottom-color: #bbb;
   }
 
   .thumb {
@@ -217,13 +153,12 @@
     box-shadow: 3px 3px 8px #111;
     margin-bottom: 1rem;
   }
-  body.light .thumb {
-    box-shadow: 3px 3px 8px #999;
-  }
+
   .thumb img {
     width: 100%;
     display: block;
   }
+
   .thumb button.delete {
     position: absolute;
     top: 6px;
@@ -237,8 +172,18 @@
     cursor: pointer;
     font-size: 14px;
   }
+
   .thumb button.delete:hover {
     background: #888;
+  }
+
+  /* Grid overlay */
+  #gridCanvas {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    pointer-events: none;
+    border-radius: 12px;
   }
 
   /* Responsive */
@@ -257,40 +202,59 @@
       padding: 1rem;
     }
   }
+
+  /* Screen-reader only */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+  }
 </style>
 </head>
 <body>
 
-<header>kays draw site idk</header>
+<header>Kay’s Drawing Site</header>
 
 <main>
   <section id="tools" aria-label="Drawing tools">
     <label>Tool</label>
-    <button id="brush" class="tool-btn active" aria-pressed="true" title="Brush Tool">
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M7 16c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm14.7-6.29-1.41-1.41-3.3 3.3-2.79-2.79-6.83 6.83a.996.996 0 000 1.41l2.54 2.54a.996.996 0 001.41 0l6.83-6.83-2.8-2.79 3.3-3.3z"/>
-      </svg> Brush
+    <button id="brush" class="tool-btn active" aria-pressed="true" title="Brush Tool (Shortcut B)">
+      🖌 Brush
     </button>
-    <button id="eraser" class="tool-btn" aria-pressed="false" title="Eraser Tool">
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M16.24 3.56L6.29 13.51a2 2 0 00-.59 1.41c0 .56.23 1.07.59 1.43l2.48 2.48a2.006 2.006 0 002.83 0l9.95-9.95-4.9-4.9z"/>
-      </svg> Eraser
+    <button id="eraser" class="tool-btn" aria-pressed="false" title="Eraser Tool (Shortcut E)">
+      🩹 Eraser
     </button>
-    <button id="undo" class="tool-btn" title="Undo last action">
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M12 5v2c3.87 0 7 3.13 7 7a7 7 0 01-12 5l-2-2"/>
-      </svg> Undo
+    <button id="rect" class="tool-btn" aria-pressed="false" title="Rectangle Tool (Shortcut R)">
+      ▭ Rectangle
+    </button>
+    <button id="circle" class="tool-btn" aria-pressed="false" title="Circle Tool (Shortcut C)">
+      ● Circle
     </button>
 
     <label for="brushSize">Brush Size</label>
     <input type="range" id="brushSize" min="1" max="50" value="5" aria-label="Select brush size" />
 
-    <button id="saveBtn" class="tool-btn" title="Save drawing to gallery">Save Drawing</button>
+    <label for="opacity">Brush Opacity</label>
+    <input type="range" id="opacity" min="0.1" max="1" step="0.05" value="1" aria-label="Select brush opacity" />
+
+    <button id="undo" class="tool-btn" title="Undo last action (Shortcut Z)">↩ Undo</button>
+    <button id="redo" class="tool-btn" title="Redo action (Shortcut Y)">↪ Redo</button>
+    <button id="clear" class="tool-btn" title="Clear canvas">🧹 Clear</button>
+    <button id="gridToggle" class="tool-btn" aria-pressed="false" title="Toggle grid overlay"># Grid</button>
+    <button id="snapToggle" class="tool-btn" aria-pressed="false" title="Toggle snap to grid">⇘ Snap</button>
+    <button id="saveBtn" class="tool-btn" title="Save drawing to gallery">💾 Save</button>
+    <button id="downloadBtn" class="tool-btn" title="Download drawing as PNG">⬇ Download</button>
   </section>
 
   <section id="canvas-container" aria-label="Drawing canvas">
     <canvas id="canvas" width="800" height="600" aria-describedby="canvasDesc"></canvas>
-    <p id="canvasDesc" class="sr-only">Canvas for drawing with brush and eraser tools</p>
+    <canvas id="gridCanvas" width="800" height="600" aria-hidden="true"></canvas>
+    <p id="canvasDesc" class="sr-only">Canvas for drawing with brush, eraser, rectangle, and circle tools.</p>
   </section>
 
   <section id="gallery" aria-label="Drawing gallery">
@@ -300,152 +264,58 @@
 </main>
 
 <script>
-  // Setup canvas and context
+  // Setup canvas contexts
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
+  const gridCanvas = document.getElementById('gridCanvas');
+  const gridCtx = gridCanvas.getContext('2d');
 
-  // Set initial canvas white background
+  // Canvas size & helpers
+  const width = canvas.width;
+  const height = canvas.height;
+
+  // Initialize canvas white background
   function clearCanvas() {
+    ctx.globalCompositeOperation = 'source-over';
     ctx.fillStyle = '#fff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, width, height);
   }
   clearCanvas();
 
+  // Variables for drawing
   let drawing = false;
   let currentTool = 'brush';
   let brushSize = 5;
-  let brushColor = '#222'; // Dark gray for brush
+  let brushOpacity = 1;
+  let brushColor = '#222'; // Dark gray brush
+  let startX = 0;
+  let startY = 0;
   let undoStack = [];
+  let redoStack = [];
+  const maxUndo = 20;
+  let gridVisible = false;
+  let snapToGrid = false;
+  const gridSpacing = 25;
 
-  // Save state for undo
+  // Save canvas state to undo stack
   function saveState() {
-    if(undoStack.length >= 10) undoStack.shift(); // max 10 undos
-    undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    if(undoStack.length >= maxUndo) undoStack.shift();
+    undoStack.push(ctx.getImageData(0, 0, width, height));
+    // Clear redo stack on new action
+    redoStack = [];
   }
 
-  // Restore last state
+  // Undo
   function undo() {
-    if(undoStack.length > 0) {
-      const imageData = undoStack.pop();
-      ctx.putImageData(imageData, 0, 0);
-    }
+    if(undoStack.length === 0) return;
+    redoStack.push(ctx.getImageData(0, 0, width, height));
+    const last = undoStack.pop();
+    ctx.putImageData(last, 0, 0);
   }
 
-  // Start drawing
-  function startDraw(e) {
-    drawing = true;
-    ctx.beginPath();
-    const pos = getMousePos(e);
-    ctx.moveTo(pos.x, pos.y);
-    saveState();
-  }
-  // Stop drawing
-  function stopDraw() {
-    drawing = false;
-  }
-
-  // Get mouse/touch position relative to canvas
-  function getMousePos(e) {
-    const rect = canvas.getBoundingClientRect();
-    let x, y;
-    if(e.touches) {
-      x = e.touches[0].clientX - rect.left;
-      y = e.touches[0].clientY - rect.top;
-    } else {
-      x = e.clientX - rect.left;
-      y = e.clientY - rect.top;
-    }
-    return {x, y};
-  }
-
-  // Drawing move
-  function draw(e) {
-    if(!drawing) return;
-    const pos = getMousePos(e);
-    if(currentTool === 'brush') {
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.strokeStyle = brushColor;
-    } else if(currentTool === 'eraser') {
-      ctx.globalCompositeOperation = 'destination-out';
-      ctx.strokeStyle = 'rgba(0,0,0,1)';
-    }
-    ctx.lineWidth = brushSize;
-    ctx.lineCap = 'round';
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
-  }
-
-  // Tool buttons toggle
-  const brushBtn = document.getElementById('brush');
-  const eraserBtn = document.getElementById('eraser');
-  const undoBtn = document.getElementById('undo');
-  const brushSizeInput = document.getElementById('brushSize');
-  const saveBtn = document.getElementById('saveBtn');
-
-  function setActiveTool(tool) {
-    currentTool = tool;
-    brushBtn.classList.toggle('active', tool === 'brush');
-    brushBtn.setAttribute('aria-pressed', tool === 'brush');
-    eraserBtn.classList.toggle('active', tool === 'eraser');
-    eraserBtn.setAttribute('aria-pressed', tool === 'eraser');
-  }
-
-  brushBtn.addEventListener('click', () => setActiveTool('brush'));
-  eraserBtn.addEventListener('click', () => setActiveTool('eraser'));
-  undoBtn.addEventListener('click', undo);
-  brushSizeInput.addEventListener('input', (e) => {
-    brushSize = e.target.value;
-  });
-
-  // Save drawing to gallery
-  const gallery = document.getElementById('gallery');
-  function addThumbnail(dataURL) {
-    const thumbDiv = document.createElement('div');
-    thumbDiv.className = 'thumb';
-
-    const img = document.createElement('img');
-    img.src = dataURL;
-    img.alt = 'Saved drawing thumbnail';
-
-    const delBtn = document.createElement('button');
-    delBtn.textContent = '×';
-    delBtn.className = 'delete';
-    delBtn.title = 'Delete this drawing';
-
-    delBtn.addEventListener('click', () => {
-      gallery.removeChild(thumbDiv);
-    });
-
-    thumbDiv.appendChild(img);
-    thumbDiv.appendChild(delBtn);
-    gallery.appendChild(thumbDiv);
-  }
-
-  saveBtn.addEventListener('click', () => {
-    const dataURL = canvas.toDataURL('image/png');
-    addThumbnail(dataURL);
-  });
-
-  // Mouse and touch events for drawing
-  canvas.addEventListener('mousedown', startDraw);
-  canvas.addEventListener('mouseup', stopDraw);
-  canvas.addEventListener('mouseout', stopDraw);
-  canvas.addEventListener('mousemove', draw);
-
-  canvas.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    startDraw(e);
-  }, {passive: false});
-  canvas.addEventListener('touchend', (e) => {
-    e.preventDefault();
-    stopDraw();
-  }, {passive: false});
-  canvas.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    draw(e);
-  }, {passive: false});
-
-</script>
-
-</body>
-</html>
+  // Redo
+  function redo() {
+    if(redoStack.length === 0) return;
+    undoStack.push(ctx.getImageData(0, 0, width, height));
+    const next = redoStack.pop();
+    ctx.putImage
