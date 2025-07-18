@@ -2,78 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>kenji i hate u</title>
+  <title>my bad kenji :)</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background-color: #111;
-      color: #ff4b5c;
-      font-family: 'Courier New', Courier, monospace;
+      background-color: #ffffff;
+      color: #333;
+      font-family: 'Helvetica Neue', sans-serif;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
 
     h1 {
-      font-size: 3rem;
-      animation: pulse 1s infinite alternate;
+      font-size: 2.5rem;
+      font-weight: 400;
       text-align: center;
-    }
-
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-        color: #ff4b5c;
-      }
-      100% {
-        transform: scale(1.1);
-        color: #ff99a0;
-      }
-    }
-
-    .meter-container {
-      margin-top: 40px;
-      width: 300px;
-      text-align: center;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      margin: 20px 0;
-    }
-
-    .value {
-      font-size: 1.5rem;
-      color: #ffbaba;
+      color: #666;
     }
   </style>
 </head>
 <body>
-
-  <h1 id="hateText">kenji i hate u</h1>
-
-  <div class="meter-container">
-    <label for="hateMeter">hate meter</label>
-    <input type="range" id="hateMeter" min="0" max="100" value="100" />
-    <div class="value" id="hateValue">🔥 100%</div>
-  </div>
-
-  <script>
-    const hateMeter = document.getElementById('hateMeter');
-    const hateValue = document.getElementById('hateValue');
-    const hateText = document.getElementById('hateText');
-
-    hateMeter.addEventListener('input', () => {
-      const value = hateMeter.value;
-      hateValue.textContent = `🔥 ${value}%`;
-
-      // Optional: fade the text intensity with slider
-      hateText.style.opacity = value / 100;
-    });
-  </script>
-
+  <h1>my bad kenji :)</h1>
 </body>
 </html>
