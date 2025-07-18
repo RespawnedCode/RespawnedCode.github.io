@@ -1,167 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Giant RespawnedCode Spinner</title>
+  <meta charset="UTF-8">
+  <title>kenji</title>
   <style>
-    @font-face {
-      font-family: 'Minecraftia';
-      src: url('https://cdn.jsdelivr.net/gh/duy13/minecraft-font/Minecraftia.ttf') format('truetype');
-    }
-
     body {
-      margin: 0;
-      background: linear-gradient(135deg, #333, #111);
-      font-family: 'Minecraftia', monospace;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px;
-      user-select: none;
-    }
-
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 30px;
-      text-align: center;
-    }
-
-    .spinner-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .spinner {
-      width: 500px;
-      height: 500px;
-      border-radius: 50%;
-      background: #888;
+      font-family: sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      filter: grayscale(100%);
-      box-shadow: 0 0 60px rgba(0, 0, 0, 0.7);
-      margin-bottom: 20px;
-      touch-action: none;
-      cursor: grab;
-      user-select: none;
-    }
-    .spinner:active {
-      cursor: grabbing;
-    }
-
-    .spinner img {
-      width: 90%;
-      height: 90%;
-      pointer-events: none;
-      user-drag: none;
-      user-select: none;
-    }
-
-    .counter {
-      background: rgba(0, 0, 0, 0.4);
-      padding: 10px 25px;
-      border-radius: 12px;
-      margin: 8px;
-      font-size: 1.5rem;
-      min-width: 180px;
-      text-align: center;
+      height: 100vh;
+      margin: 0;
+      background: #111;
+      color: #f55;
+      font-size: 3rem;
     }
   </style>
 </head>
 <body>
-  <h1>RespawnedCode Giant Spinner</h1>
-
-  <div class="spinner-box">
-    <div class="spinner" id="spinner">
-      <img src="https://i.postimg.cc/xQsT1Xyg/fidgetspinner-d500c144.png" alt="Fidget Spinner" />
-    </div>
-    <div id="speedCounter" class="counter">Speed: 0</div>
-    <div id="spinStreak" class="counter">Streak: 0</div>
-  </div>
-
-  <script>
-    const spinner = document.getElementById('spinner');
-    const speedCounter = document.getElementById('speedCounter');
-    const spinStreak = document.getElementById('spinStreak');
-
-    let isDragging = false;
-    let velocity = 0;
-    let rotation = 0;
-    const friction = 0.992;
-    let center = { x: 0, y: 0 };
-    let lastAngle = 0;
-    let lastTime = 0;
-    let streak = 0;
-
-    function getEventPos(e) {
-      return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY };
-    }
-
-    function startDrag(e) {
-      isDragging = true;
-      const rect = spinner.getBoundingClientRect();
-      center = {
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2
-      };
-
-      const pos = getEventPos(e);
-      lastAngle = Math.atan2(pos.y - center.y, pos.x - center.x);
-      lastTime = Date.now();
-      e.preventDefault();
-    }
-
-    function stopDragging() {
-      isDragging = false;
-    }
-
-    function duringDrag(e) {
-      if (!isDragging) return;
-      const pos = getEventPos(e);
-      const angle = Math.atan2(pos.y - center.y, pos.x - center.x);
-      const delta = angle - lastAngle;
-      const now = Date.now();
-      const dt = now - lastTime;
-      const newVelocity = delta * 1000 / dt * 3;
-
-      if (Math.abs(newVelocity) > 0.4) {
-        streak++;
-      }
-
-      velocity = newVelocity;
-      rotation += delta * (180 / Math.PI);
-      lastAngle = angle;
-      lastTime = now;
-      spinner.style.transform = `rotate(${rotation}deg)`;
-    }
-
-    window.addEventListener('mousedown', startDrag);
-    window.addEventListener('touchstart', startDrag, { passive: false });
-
-    window.addEventListener('mouseup', stopDragging);
-    window.addEventListener('touchend', stopDragging);
-    window.addEventListener('blur', stopDragging);
-
-    window.addEventListener('mousemove', duringDrag);
-    window.addEventListener('touchmove', duringDrag, { passive: false });
-
-    function animate() {
-      if (!isDragging) {
-        rotation += velocity;
-        velocity *= friction;
-        if (Math.abs(velocity) < 0.001) velocity = 0;
-        spinner.style.transform = `rotate(${rotation}deg)`;
-      }
-
-      speedCounter.textContent = 'Speed: ' + Math.abs(velocity).toFixed(2);
-      spinStreak.textContent = 'Streak: ' + streak;
-      requestAnimationFrame(animate);
-    }
-
-    animate();
-  </script>
+  kenji i hate u
 </body>
 </html>
